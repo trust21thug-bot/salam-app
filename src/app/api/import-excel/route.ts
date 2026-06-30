@@ -7,40 +7,19 @@ function excelSerialToDate(serial: number): string {
   return date.toISOString().split("T")[0];
 }
 
-async function loadExcel() {
-  const XLSX = await import("xlsx");
-  const fs = await import("fs") as typeof import("fs");
-  const path = await import("path") as typeof import("path");
-
-  let excelPath: string | null = null;
-  const candidates = [
-    path.join(process.cwd(), "قائمة الطلبة (2).xlsx"),
-    path.join(process.cwd(), "قائمة الطلبة.xlsx"),
-  ];
-  const allFiles = fs.readdirSync(process.cwd()).filter((f: string) => f.endsWith(".xlsx") && f.includes("قائمة"));
-  if (allFiles.length > 0) candidates.push(path.join(process.cwd(), allFiles[0]));
-
-  for (const c of candidates) {
-    if (fs.existsSync(c)) { excelPath = c; break; }
-  }
-
-  if (!excelPath) {
-    return { error: "لم يتم العثور على ملف Excel للقائمة في " + process.cwd() };
-  }
-  const fileBuffer = fs.readFileSync(excelPath);
-  const wb = XLSX.read(fileBuffer, { type: "buffer" });
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: "" });
-  return { rows, fs, path };
-}
-
-export async function POST() {
+export async function POST(req: Request) {
   try {
-    const loaded = await loadExcel();
-    if ("error" in loaded) {
-      return Response.json({ error: loaded.error }, { status: 404 });
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return Response.json({ error: "الرجاء اختيار ملف Excel" }, { status: 400 });
     }
-    const { rows } = loaded;
+
+    const XLSX = await import("xlsx");
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const wb = XLSX.read(buffer, { type: "buffer" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: "" });
     const db = createAdminClient();
 
   const circleNames = new Set<string>();
@@ -132,7 +111,7 @@ export async function POST() {
         insurance: insurance === "نعم",
         file_status: fileStatus || null,
         classification: "public_circle",
-        sibling_id: null,
+        sibling_ids: [],
       });
       imported++;
     } catch (e: any) {

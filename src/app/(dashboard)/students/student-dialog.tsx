@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import type { Student, Teacher, CircleTransfer } from "@/types/database";
@@ -39,7 +40,7 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
   const [neighborhood, setNeighborhood] = useState(student?.neighborhood ?? "");
   const [goesAlone, setGoesAlone] = useState(student?.goes_alone ? "yes" : "no");
   const [problemDays, setProblemDays] = useState(student?.problem_days ?? "");
-  const [siblingId, setSiblingId] = useState(student?.sibling_id ?? "");
+  const [siblingIds, setSiblingIds] = useState<string[]>(student?.sibling_ids ?? []);
   const [requiredMem, setRequiredMem] = useState(student?.required_memorization?.toString() ?? "0.25");
   const [requiredRev, setRequiredRev] = useState(student?.required_revision?.toString() ?? "0.25");
   const [totalMemorization, setTotalMemorization] = useState(student?.total_memorization?.toString() ?? "");
@@ -49,7 +50,7 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
   const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
 
   const filteredSiblings = useMemo(() => {
-    if (!siblingSearch) return allStudents ?? [];
+    if (!siblingSearch) return (allStudents ?? []).filter((s) => s.id !== student?.id);
     const q = siblingSearch.toLowerCase();
     return (allStudents ?? []).filter((s) =>
       s.id !== student?.id && `${s.first_name} ${s.last_name}`.toLowerCase().includes(q)
@@ -100,7 +101,7 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
         neighborhood: neighborhood || null,
         goes_alone: goesAlone === "yes",
         problem_days: problemDays || null,
-        sibling_id: siblingId || null,
+        sibling_ids: siblingIds,
         photo_url: finalPhotoUrl || null,
         required_memorization: parseFloat(requiredMem) || 0.25,
         required_revision: parseFloat(requiredRev) || 0.25,
@@ -278,17 +279,26 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
         </div>
       </div>
       <div>
-        <Label>هل له أخ في المدرسة؟</Label>
+        <Label>هل له أخوة في المدرسة؟</Label>
         <Input placeholder="ابحث بالاسم..." value={siblingSearch} onChange={(e) => setSiblingSearch(e.target.value)} className="mb-1" />
-        <Select value={siblingId} onValueChange={setSiblingId}>
-          <SelectTrigger><SelectValue placeholder="اختر الأخ (إن وجد)" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">لا يوجد</SelectItem>
-            {filteredSiblings.filter((s) => s.id !== student?.id).map((s) => (
-              <SelectItem key={s.id} value={s.id}>{s.first_name} {s.last_name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="max-h-40 overflow-y-auto space-y-1 border rounded-md p-2">
+          {filteredSiblings.map((s) => (
+            <label key={s.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted rounded px-1 py-0.5">
+              <Checkbox
+                checked={siblingIds.includes(s.id)}
+                onCheckedChange={(checked) => {
+                  setSiblingIds((prev) =>
+                    checked ? [...prev, s.id] : prev.filter((id) => id !== s.id)
+                  );
+                }}
+              />
+              <span>{s.first_name} {s.last_name}</span>
+            </label>
+          ))}
+          {filteredSiblings.length === 0 && (
+            <p className="text-xs text-muted-foreground text-center py-2">لا يوجد طلاب</p>
+          )}
+        </div>
       </div>
       <div>
         <Label>الحلقة</Label>

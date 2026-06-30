@@ -12,6 +12,7 @@ interface Props {
     discipline: any[];
     generalRanking: any | null;
     schoolYear?: any[];
+    siblings?: any[];
   };
 }
 
@@ -87,7 +88,7 @@ function StatBox({ label, value, color }: { label: string; value: string; color?
 }
 
 export function StudentProfile({ data }: Props) {
-  const { student, records, tracking, discipline, generalRanking, schoolYear } = data;
+  const { student, records, tracking, discipline, generalRanking, schoolYear, siblings } = data;
   const sy = (schoolYear ?? []) as any[];
   const startDate = sy?.[0]?.start_date ? new Date(sy[0].start_date) : null;
 
@@ -278,6 +279,9 @@ export function StudentProfile({ data }: Props) {
               <Row label="يذهب بمفرده" value={student.goes_alone ? "نعم" : "لا"} />
               {student.problem_days && <Row label="الأيام المشكلة" value={student.problem_days} />}
               {student.notes && <Row label="ملاحظات" value={student.notes} />}
+              {(siblings?.length ?? 0) > 0 && (
+                <Row label="الإخوة في المدرسة" value={siblings!.map((s: any) => `${s.first_name} ${s.last_name}`).join("، ")} />
+              )}
             </div>
           </Section>
 

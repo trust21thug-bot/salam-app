@@ -18,14 +18,21 @@ async function getStudentData(id: string) {
     db.from("weekly_rankings").select("*").eq("student_id", id).order("week_number", { ascending: false }),
     db.from("school_year").select("*"),
   ]);
+  const studentData = student.data as any;
+  let siblings: any[] = [];
+  if (studentData?.sibling_ids?.length) {
+    const { data: sibData } = await db.from("students").select("id, first_name, last_name").in("id", studentData.sibling_ids);
+    siblings = (sibData ?? []) as any[];
+  }
   return {
-    student: student.data,
+    student: studentData,
     records: records.data ?? [],
     tracking: tracking.data ?? [],
     discipline: discipline.data ?? [],
     generalRanking: (generalRanking as any)?.data ?? null,
     weeklyRankings: (weeklyRankings as any)?.data ?? [],
     schoolYear: (schoolYear.data ?? []) as any[],
+    siblings,
   };
 }
 

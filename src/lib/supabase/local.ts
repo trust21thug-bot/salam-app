@@ -389,7 +389,7 @@ export function seedLocalDatabase() {
       academic_level: levels[i % 10],
       illness: illnesses[i % 10],
       file_status: fileStatuses[i % 6],
-      sibling_id: null,
+      sibling_ids: [],
       photo_url: null,
       photo_cropped_url: null,
       total_memorization: Math.round(Math.random() * 10 * 10) / 10,
@@ -403,8 +403,8 @@ export function seedLocalDatabase() {
   // Assign siblings
   for (let i = 0; i < tables.students.length; i += 3) {
     if (i + 1 < tables.students.length) {
-      tables.students[i].sibling_id = tables.students[i + 1].id;
-      tables.students[i + 1].sibling_id = tables.students[i].id;
+      tables.students[i].sibling_ids = [tables.students[i + 1].id];
+      tables.students[i + 1].sibling_ids = [tables.students[i].id];
     }
   }
 

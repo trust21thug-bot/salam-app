@@ -59,7 +59,7 @@ export interface Student {
   classification: Classification;
   illness: string | null;
   file_status: string | null;
-  sibling_id: string | null;
+  sibling_ids: string[];
   required_memorization?: number;
   required_revision?: number;
   total_memorization?: number | null;

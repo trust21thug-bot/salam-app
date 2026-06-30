@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -163,15 +163,22 @@ export function DashboardClient({ stats, teachers, assistants, attendants }: Pro
     router.refresh();
   };
 
-  const handleImport = async () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     try {
-      const res = await fetch("/api/import-excel", { method: "POST" });
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/import-excel", { method: "POST", body: fd });
       const data = await res.json();
       if (data.ok) toast.success(`تم استيراد ${data.imported} طالبًا من ${data.teachers} حلقة`);
       else toast.error(data.error || "فشل الاستيراد");
     } catch {
       toast.error("فشل الاتصال");
     }
+    e.target.value = "";
     router.refresh();
   };
 
@@ -184,7 +191,8 @@ export function DashboardClient({ stats, teachers, assistants, attendants }: Pro
         </div>
         <div className="flex gap-2">
           <Button onClick={handleSeed} variant="outline" size="sm">تعبئة بيانات اختبار</Button>
-          <Button onClick={handleImport} size="sm">استيراد قائمة الطلبة</Button>
+          <input ref={fileInputRef} type="file" accept=".xlsx,.xls" onChange={handleImport} hidden />
+          <Button onClick={() => fileInputRef.current?.click()} size="sm">استيراد قائمة الطلبة</Button>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">

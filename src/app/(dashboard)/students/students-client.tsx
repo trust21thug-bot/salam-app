@@ -128,6 +128,30 @@ export function StudentsClient({ initialStudents, teachers }: { initialStudents:
             filter: { type: "text", placeholder: "بحث بمرض", filterValue: (s) => s.illness || "" },
           },
           {
+            key: "neighborhood",
+            header: "الحي",
+            render: (s: Student) => s.neighborhood || "—",
+            filter: { type: "text", placeholder: "بحث بالحي", filterValue: (s) => s.neighborhood || "" },
+          },
+          {
+            key: "goes_alone",
+            header: "بمفرده",
+            render: (s: Student) => s.goes_alone ? <Badge variant="outline" className="border-0" style={{ backgroundColor: "#99FF99", color: "#003300" }}>نعم</Badge> : <Badge variant="destructive">لا</Badge>,
+            filter: { type: "select", placeholder: "الكل", options: [{ label: "نعم", value: "yes" }, { label: "لا", value: "no" }], filterValue: (s) => s.goes_alone ? "yes" : "no" },
+          },
+          {
+            key: "problem_days",
+            header: "أيام مشكلة",
+            render: (s: Student) => s.problem_days || "—",
+            filter: { type: "text", placeholder: "بحث", filterValue: (s) => s.problem_days || "" },
+          },
+          {
+            key: "notes",
+            header: "ملاحظات",
+            render: (s: Student) => s.notes || "—",
+            filter: { type: "text", placeholder: "بحث", filterValue: (s) => s.notes || "" },
+          },
+          {
             key: "actions",
             header: "",
             render: (s: Student) => (
