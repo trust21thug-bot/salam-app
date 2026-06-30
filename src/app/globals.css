@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: oklch(0.97 0.008 80);
+  --color-foreground: oklch(0.14 0.002 60);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.14 0.002 60);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.14 0.002 60);
+  --color-primary: oklch(0.48 0.098 80);
+  --color-primary-foreground: oklch(0.97 0.02 60);
+  --color-secondary: oklch(0.52 0.06 175);
+  --color-secondary-foreground: oklch(0.97 0 0);
+  --color-muted: oklch(0.94 0.01 85);
+  --color-muted-foreground: oklch(0.52 0.01 60);
+  --color-accent: oklch(0.94 0.03 80);
+  --color-accent-foreground: oklch(0.25 0.03 160);
+  --color-destructive: oklch(0.55 0.15 35);
+  --color-destructive-foreground: oklch(0.97 0 0);
+  --color-border: oklch(0.88 0.01 75);
+  --color-input: oklch(0.88 0.01 75);
+  --color-ring: oklch(0.48 0.098 80);
+  --color-sidebar: oklch(0.18 0.035 160);
+  --color-sidebar-foreground: oklch(0.85 0.02 85);
+  --color-sidebar-primary: oklch(0.48 0.098 80);
+  --color-sidebar-primary-foreground: oklch(0.97 0.02 60);
+  --color-sidebar-accent: oklch(0.25 0.03 160);
+  --color-sidebar-accent-foreground: oklch(0.85 0.02 85);
+  --color-sidebar-border: oklch(0.25 0.03 160);
+  --color-sidebar-ring: oklch(0.48 0.098 80);
+  --font-display: "Amiri", "Traditional Arabic", serif;
+  --font-body: "Tajawal", "Noto Sans Arabic", sans-serif;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-muted) transparent;
+}
+
+/* Force Latin numerals everywhere */
+html, body, input, select, textarea, table {
+  font-variant-numeric: tabular-nums;
+}
+/* Ensure table cells have centered text */
+th, td {
+  text-align: center;
+}

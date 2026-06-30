@@ -1,0 +1,37 @@
+appId: com.salam.school
+productName: مدرسة السلام
+copyright: Copyright © 2026
+icon: app-icon.ico
+
+asar: false
+
+files:
+  - node_modules
+  - package.json
+  - next.config.ts
+  - electron
+  - "public/**"
+  - قائمة الطلبة (2).xlsx
+  - .env.local
+
+extraResources:
+  - from: .next
+    to: app/.next
+    filter:
+      - "**/*"
+
+directories:
+  output: dist5
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: مدرسة السلام
+  uninstallDisplayName: مدرسة السلام
