@@ -11,11 +11,24 @@ async function loadExcel() {
   const XLSX = await import("xlsx");
   const fs = await import("fs") as typeof import("fs");
   const path = await import("path") as typeof import("path");
-  const excelPath = path.join(process.cwd(), "قائمة الطلبة (2).xlsx");
-  if (!fs.existsSync(excelPath)) {
-    return { error: "Excel file not found at " + excelPath };
+
+  let excelPath: string | null = null;
+  const candidates = [
+    path.join(process.cwd(), "قائمة الطلبة (2).xlsx"),
+    path.join(process.cwd(), "قائمة الطلبة.xlsx"),
+  ];
+  const allFiles = fs.readdirSync(process.cwd()).filter((f: string) => f.endsWith(".xlsx") && f.includes("قائمة"));
+  if (allFiles.length > 0) candidates.push(path.join(process.cwd(), allFiles[0]));
+
+  for (const c of candidates) {
+    if (fs.existsSync(c)) { excelPath = c; break; }
   }
-  const wb = XLSX.readFile(excelPath);
+
+  if (!excelPath) {
+    return { error: "لم يتم العثور على ملف Excel للقائمة في " + process.cwd() };
+  }
+  const fileBuffer = fs.readFileSync(excelPath);
+  const wb = XLSX.read(fileBuffer, { type: "buffer" });
   const ws = wb.Sheets[wb.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: "" });
   return { rows, fs, path };
