@@ -35,6 +35,10 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
   const [illness, setIllness] = useState(student?.illness ?? "");
   const [fileStatus, setFileStatus] = useState(student?.file_status ?? "");
   const [insurance, setInsurance] = useState(student?.insurance === false ? "no" : "yes");
+  const [notes, setNotes] = useState(student?.notes ?? "");
+  const [neighborhood, setNeighborhood] = useState(student?.neighborhood ?? "");
+  const [goesAlone, setGoesAlone] = useState(student?.goes_alone ? "yes" : "no");
+  const [problemDays, setProblemDays] = useState(student?.problem_days ?? "");
   const [siblingId, setSiblingId] = useState(student?.sibling_id ?? "");
   const [requiredMem, setRequiredMem] = useState(student?.required_memorization?.toString() ?? "0.25");
   const [requiredRev, setRequiredRev] = useState(student?.required_revision?.toString() ?? "0.25");
@@ -92,6 +96,10 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
         illness: illness || null,
         file_status: fileStatus || null,
         insurance: insurance === "yes",
+        notes: notes || null,
+        neighborhood: neighborhood || null,
+        goes_alone: goesAlone === "yes",
+        problem_days: problemDays || null,
         sibling_id: siblingId || null,
         photo_url: finalPhotoUrl || null,
         required_memorization: parseFloat(requiredMem) || 0.25,
@@ -221,6 +229,35 @@ function StudentDialogInner({ teachers, student, open, onOpenChange, onDone, tri
             <SelectItem value="no">لا</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div>
+        <Label>الملاحظات</Label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="أي ملاحظات إضافية"
+          className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[60px]"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>الحي</Label>
+          <Input value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} placeholder="اسم الحي" />
+        </div>
+        <div>
+          <Label>هل يذهب بمفرده؟</Label>
+          <Select value={goesAlone} onValueChange={setGoesAlone}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="yes">نعم</SelectItem>
+              <SelectItem value="no">لا</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div>
+        <Label>الأيام المشكلة</Label>
+        <Input value={problemDays} onChange={(e) => setProblemDays(e.target.value)} placeholder="مثال: السبت والأربعاء" />
       </div>
       <div>
         <Label>الحفظ المطلوب (حزب/أسبوع)</Label>

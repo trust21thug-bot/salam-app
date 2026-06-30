@@ -108,6 +108,12 @@ export async function POST() {
     }
 
     const illness = r[14]?.toString().trim() || "";
+    const notes = r[5]?.toString().trim() || "";
+    const insurance = r[6]?.toString().trim();
+    const fileStatus = r[7]?.toString().trim();
+    const neighborhood = r[11]?.toString().trim() || "";
+    const goesAlone = r[12]?.toString().trim();
+    const problemDays = r[13]?.toString().trim() || "";
     const circleId = teacherMap.get(circleName)?.id || "";
 
     try {
@@ -119,8 +125,13 @@ export async function POST() {
         circle_id: circleId,
         academic_level: academicLevel,
         illness: illness || null,
+        notes: notes || null,
+        neighborhood: neighborhood || null,
+        problem_days: problemDays || null,
+        goes_alone: goesAlone === "نعم",
+        insurance: insurance === "نعم",
+        file_status: fileStatus || null,
         classification: "public_circle",
-        file_status: null,
         sibling_id: null,
       });
       imported++;

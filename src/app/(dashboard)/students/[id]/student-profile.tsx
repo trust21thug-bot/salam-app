@@ -274,6 +274,10 @@ export function StudentProfile({ data }: Props) {
               <Row label="هاتف الولي" value={student.guardian_phone || "—"} />
               <Row label="التصنيف" value={CLASSIFICATION_LABELS[student.classification as string] || student.classification || "—"} />
               {student.illness && <Row label="مرض" value={student.illness} />}
+              {student.neighborhood && <Row label="الحي" value={student.neighborhood} />}
+              <Row label="يذهب بمفرده" value={student.goes_alone ? "نعم" : "لا"} />
+              {student.problem_days && <Row label="الأيام المشكلة" value={student.problem_days} />}
+              {student.notes && <Row label="ملاحظات" value={student.notes} />}
             </div>
           </Section>
 

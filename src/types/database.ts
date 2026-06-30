@@ -65,6 +65,10 @@ export interface Student {
   total_memorization?: number | null;
   master_evaluation?: number | null;
   insurance?: boolean;
+  notes?: string | null;
+  neighborhood?: string | null;
+  goes_alone?: boolean;
+  problem_days?: string | null;
   created_at: string;
 }
 

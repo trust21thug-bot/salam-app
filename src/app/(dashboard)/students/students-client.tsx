@@ -21,6 +21,10 @@ function exportToExcel(data: Student[], filename: string) {
       "حالة الملف": FILE_STATUS_LABELS[s.file_status as string] || s.file_status || "",
       المرض: s.illness || "",
       "تاريخ الميلاد": s.birth_date || "",
+      الملاحظات: s.notes || "",
+      الحي: s.neighborhood || "",
+      "يذهب بمفرده": s.goes_alone ? "نعم" : "لا",
+      "الأيام المشكلة": s.problem_days || "",
     }));
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(rows);
